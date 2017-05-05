@@ -134,9 +134,7 @@ func (t *Policy) updatePolicy(stub shim.ChaincodeStubInterface, args []string) (
 	var key,key2,key3, jsonResp string
 	var err error
 	var msg string
-	if len(args) <= 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
-	}
+	
 
 	key = args[0]
 	key2= args[1]
