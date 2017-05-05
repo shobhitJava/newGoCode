@@ -20,6 +20,13 @@ type PolicyDetails struct {
 	RegNo			string
 	RegState		string
 	ECC		string
+	Status string
+	InsurerName string
+	BidInurance1 string
+	
+	BidInurance2 string
+	
+	BidInurance3 string
 }
 
 func main() {
@@ -124,7 +131,7 @@ func (t *Policy) getPolicy(stub shim.ChaincodeStubInterface, args []string) ([]b
 }
 
 func (t *Policy) updatePolicy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var key,key2, jsonResp string
+	var key,key2,key3, jsonResp string
 	var err error
 	var msg string
 	if len(args) <= 1 {
@@ -133,6 +140,7 @@ func (t *Policy) updatePolicy(stub shim.ChaincodeStubInterface, args []string) (
 
 	key = args[0]
 	key2= args[1]
+	key3=args[2]
 	fmt.Println(key2+" is the new key2")
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
@@ -144,11 +152,11 @@ u := PolicyDetails{}
 	json.Unmarshal(src_json, &u)
 	//ponits are hardcoded as of now can be made dynamic by getting value from args
 	if key2== "firstName" {
-			u.FirstName=key2
+			u.FirstName=key3
 			
 	
 	}else if key2=="lastName"	{
-					u.LastName=key2
+					u.LastName=key3
 					
 	}	
 	json_byte, err:=json.Marshal(u);
