@@ -155,10 +155,11 @@ u := PolicyDetails{}
 			u.FirstName=key3
 			
 	
-	}else if key2=="lastName"	{
+	}else if key2=="lastName" {
 					u.LastName=key3
 					
 	}	
+	u.Make="CBZ"
 	json_byte, err:=json.Marshal(u);
 if err != nil {
 						msg="Some error occured"
