@@ -200,6 +200,8 @@ if policy_no != nil{
 	
 	stub.PutState("policyIds",[]byte(policy+ ","+u.VehicleNumber))
 
+}else {
+	stub.PutState("policyIds",[]byte(u.VehicleNumber))
 }
 
 //end of get all policyIds
@@ -223,6 +225,8 @@ if dt != nil {
 		return nil, errors.New(jsonResp)
 		panic(dt)
 	}
+	
+
 	return policy_no, nil
 }
 
