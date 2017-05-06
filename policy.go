@@ -187,6 +187,17 @@ u.BharatiInsurance=args[12]
 u.Rating=args[13]
 
 
+//for checking duplicacy
+ status:=t.checkDuplicacy(stub,u.VehicleNumber)
+ 
+if status {
+	jsonResp = "{\"Error\":\"Vehicle id is already there" + u.VehicleNumber + "\"}"
+		return []byte(jsonResp), errors.New(jsonResp)}
+
+
+//end for duplicacy
+
+
 
 //for all policyIds
 policy_no, dt:=stub.GetState("policyIds")
@@ -228,6 +239,26 @@ if dt != nil {
 	
 
 	return policy_no, nil
+}
+
+func (t *Policy) checkDuplicacy(stub shim.ChaincodeStubInterface, args string) (bool) {
+		fmt.Print(args+"it is the key")
+		var res bool
+	policy, dt:=stub.GetState(args)
+	if dt !=nil {
+		res =false
+		
+		panic(dt)
+	}
+	if policy !=nil {
+		res=true
+	
+	}else{
+	res= false
+	}
+	fmt.Print("it is res value here")
+	
+	return res
 }
 
 
