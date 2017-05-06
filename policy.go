@@ -12,21 +12,20 @@ type Policy struct{
 	
 }
 type PolicyDetails struct {
-	FirstName    string
-	LastName	string
+	FirstName    	string
+	LastName		string
 	VehicleNumber	string
-	Make	string
-	Model	string
+	Make			string
+	Model			string
+	ManYear         string
 	RegNo			string
 	RegState		string
-	ECC		string
-	Status string
-	InsurerName string
-	BidInurance1 string
-	
-	BidInurance2 string
-	
-	BidInurance3 string
+	ECC				string
+	Status 			string
+	MetroInurance 	string
+	AvonInurance  	string
+	BharatiInurance	string
+
 }
 
 func main() {
@@ -39,30 +38,7 @@ func main() {
 
 func (t *Policy) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	var msg string
-	fmt.Print("inside init method" + function)
-	if len(args) <= 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting more then 1")
-	}
-
-u:=PolicyDetails{}
-u.FirstName=args[0]
-u.LastName=args[1]
-u.VehicleNumber=args[2]
-u.Make=args[3]
-u.Model=args[4]
-//u.RegNo=args[5]	
-//u.RegState=args[6]
-//u.ECC=args[7]
-
-
-json_byte, err:=json.Marshal(u);
-	//hardcoded the key since not using the DB
-	err = stub.PutState(u.VehicleNumber, json_byte)
-	if err != nil {
-		msg="UnSuccesful"
-			return []byte(msg), err
-	}
-	msg="Success"
+	msg="In side Init"
 	return []byte(msg), nil
 }
 
@@ -71,7 +47,11 @@ func (t *Policy) Invoke(stub shim.ChaincodeStubInterface, function string, args 
 	// Handle different functions
 	
 	fmt.Println("invoke did not find func: " + function)
-
+  if function == "updatePolicy" {
+        return t.updatePolicy(stub, args)
+    }else if function=="createPolicy" {
+			 return t.createPolicy(stub, args)		
+	}
 	return nil, errors.New("Received unknown function invocation: " + function)
 	
 	
@@ -80,13 +60,12 @@ func (t *Policy) Invoke(stub shim.ChaincodeStubInterface, function string, args 
 // Query is our entry point for queries
 func (t *Policy) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
+	
 
 	// Handle different functions
 	 if function == "getPolicy" {
         	return t.getPolicy(stub, args)
-    } else if function == "updatePolicy" {
-        return t.updatePolicy(stub, args)
-    } 
+    }
 	
 	fmt.Println("query did not find func: " + function)
 
@@ -131,15 +110,16 @@ func (t *Policy) getPolicy(stub shim.ChaincodeStubInterface, args []string) ([]b
 }
 
 func (t *Policy) updatePolicy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var key,key2,key3, jsonResp string
+	var key,key2,key3,key4,key5, jsonResp string
 	var err error
 	var msg string
-	
 
 	key = args[0]
 	key2= args[1]
 	key3=args[2]
-	fmt.Println(key2+" is the new key2")
+	key4=args[3]
+	key5=args[4]
+	
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -149,15 +129,19 @@ func (t *Policy) updatePolicy(stub shim.ChaincodeStubInterface, args []string) (
 u := PolicyDetails{}
 	json.Unmarshal(src_json, &u)
 	//ponits are hardcoded as of now can be made dynamic by getting value from args
-	if key2== "firstName" {
-			u.FirstName=key3
-			
+	if key2== "status" {
+			u.Status=key3
+				fmt.Println(key2+" is the new key2"+ key+"kjdkfjds"+key3)
 	
-	}else if key2=="lastName" {
-					u.LastName=key3
+	}
+	if key4=="MetroInurance" {
+					u.MetroInurance=key5
 					
+	}else if key4=="AvonInurance"{
+		u.AvonInurance=key5
+	}else if key4=="BharatiInurance"{
+		u.BharatiInurance=key5
 	}	
-	u.Make="CBZ"
 	json_byte, err:=json.Marshal(u);
 if err != nil {
 						msg="Some error occured"
@@ -165,8 +149,50 @@ if err != nil {
 	}
 
 	err = stub.PutState(key, json_byte)
+if err != nil {
+		msg="UnSuccesful"
+			return []byte(msg), err
+			panic(err)
+	}
+	msg="Success"
 	
+	fmt.Println(key+" is the new key898998	")
 
+	return []byte(msg), nil
+}
+
+func (t *Policy) createPolicy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var msg string
+	if len(args) <= 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting more then 1")
+	}
+
+u:=PolicyDetails{}
+u.FirstName=args[0]
+u.LastName=args[1]
+u.VehicleNumber=args[2]
+u.Make=args[3]
+u.Model=args[4]
+u.ManYear=args[5]
+u.RegNo=args[6]
+u.RegState=args[7]
+u.ECC=args[8]
+u.Status=args[9]
+u.MetroInurance=args[10]
+u.AvonInurance=args[11]
+u.BharatiInurance=args[12]
+
+
+
+json_byte, err:=json.Marshal(u);
+	
+	err = stub.PutState(u.VehicleNumber, json_byte)
+	if err != nil {
+		msg="UnSuccesful"
+			return []byte(msg), err
+			panic(err)
+	}
+	msg="Success"
 	return []byte(msg), nil
 }
 
