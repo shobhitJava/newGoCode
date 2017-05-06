@@ -22,9 +22,10 @@ type PolicyDetails struct {
 	RegState		string
 	ECC				string
 	Status 			string
-	MetroInurance 	string
-	AvonInurance  	string
-	BharatiInurance	string
+	MetroInsurance 	string
+	AvonInsurance  	string
+	BharatiInsurance	string
+	Rating 			string
 
 }
 
@@ -63,8 +64,10 @@ func (t *Policy) Query(stub shim.ChaincodeStubInterface, function string, args [
 	
 
 	// Handle different functions
-	 if function == "getPolicy" {
+	 if function == "getPolicy" {   
         	return t.getPolicy(stub, args)
+    }else if function == "getAllPolicies" {   
+        	return t.getAllPolicies(stub, args)
     }
 	
 	fmt.Println("query did not find func: " + function)
@@ -135,12 +138,12 @@ u := PolicyDetails{}
 	
 	}
 	if key4=="MetroInurance" {
-					u.MetroInurance=key5
+					u.MetroInsurance=key5
 					
 	}else if key4=="AvonInurance"{
-		u.AvonInurance=key5
+		u.AvonInsurance=key5
 	}else if key4=="BharatiInurance"{
-		u.BharatiInurance=key5
+		u.BharatiInsurance	=key5
 	}	
 	json_byte, err:=json.Marshal(u);
 if err != nil {
@@ -162,7 +165,7 @@ if err != nil {
 }
 
 func (t *Policy) createPolicy(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var msg string
+	var msg, jsonResp string
 	if len(args) <= 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting more then 1")
 	}
@@ -178,12 +181,28 @@ u.RegNo=args[6]
 u.RegState=args[7]
 u.ECC=args[8]
 u.Status=args[9]
-u.MetroInurance=args[10]
-u.AvonInurance=args[11]
-u.BharatiInurance=args[12]
+u.MetroInsurance=args[10]
+u.AvonInsurance=args[11]
+u.BharatiInsurance=args[12]
+u.Rating=args[13]
 
 
 
+//for all policyIds
+policy_no, dt:=stub.GetState("policyIds")
+if dt != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for key policyId}"
+		return nil, errors.New(jsonResp)
+	}
+if policy_no != nil{
+
+	policy:=string(policy_no)
+	
+	stub.PutState("policyIds",[]byte(policy+ ","+u.VehicleNumber))
+
+}
+
+//end of get all policyIds
 json_byte, err:=json.Marshal(u);
 	
 	err = stub.PutState(u.VehicleNumber, json_byte)
@@ -195,5 +214,17 @@ json_byte, err:=json.Marshal(u);
 	msg="Success"
 	return []byte(msg), nil
 }
+
+func (t *Policy) getAllPolicies(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+		var jsonResp string
+	policy_no, dt:=stub.GetState("policyIds")
+if dt != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for key policyId}"
+		return nil, errors.New(jsonResp)
+		panic(dt)
+	}
+	return policy_no, nil
+}
+
 
 
