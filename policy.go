@@ -134,7 +134,7 @@ u := PolicyDetails{}
 	//ponits are hardcoded as of now can be made dynamic by getting value from args
 	if key2== "status" {
 			u.Status=key3
-				fmt.Println(key2+" is the new key2"+ key+"kjdkfjds"+key3)
+				
 	
 	}
 	if key4=="MetroInsurance" {
@@ -159,7 +159,7 @@ if err != nil {
 	}
 	msg="Success"
 	
-	fmt.Println(key+" is the new key898998	")
+	
 
 	return []byte(msg), nil
 }
@@ -242,7 +242,7 @@ if dt != nil {
 }
 
 func (t *Policy) checkDuplicacy(stub shim.ChaincodeStubInterface, args string) (bool) {
-		fmt.Print(args+"it is the key")
+		
 		var res bool
 	policy, dt:=stub.GetState(args)
 	if dt !=nil {
@@ -256,7 +256,6 @@ func (t *Policy) checkDuplicacy(stub shim.ChaincodeStubInterface, args string) (
 	}else{
 	res= false
 	}
-	fmt.Print("it is res value here")
 	
 	return res
 }
