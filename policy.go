@@ -137,12 +137,12 @@ u := PolicyDetails{}
 				fmt.Println(key2+" is the new key2"+ key+"kjdkfjds"+key3)
 	
 	}
-	if key4=="MetroInurance" {
+	if key4=="MetroInsurance" {
 					u.MetroInsurance=key5
 					
-	}else if key4=="AvonInurance"{
+	}else if key4=="AvonInsurance"{
 		u.AvonInsurance=key5
-	}else if key4=="BharatiInurance"{
+	}else if key4=="BharatiInsurance"{
 		u.BharatiInsurance	=key5
 	}	
 	json_byte, err:=json.Marshal(u);
